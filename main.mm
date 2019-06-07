@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <mach/mach.h>
 #include <IOKit/IOKitLib.h>
+@import CoreFoundation;
+@import Foundation;
 
 int main(int argc, char** argv, char** envp)
 {
