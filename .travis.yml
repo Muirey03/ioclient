@@ -3,7 +3,7 @@ language: objective-c
 osx_image: xcode10.1
 sudo: false
 script:
-- clang -fobjc-arc -framework IOKit -ObjC++ *.mm -o ./ioclient
+- clang -fobjc-arc -lc++ -framework IOKit -ObjC++ *.mm -o ./ioclient
 before_deploy:
 - git config --local user.name "Muirey03"
 - git config --local user.email "tommy.muir@btinternet.com"
