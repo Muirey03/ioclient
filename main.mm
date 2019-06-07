@@ -14,7 +14,7 @@ int main(int argc, char** argv, char** envp)
 	char* client_name = argv[1];
 	
 	kern_return_t kr;
-	NSMutableArray* foundServices = [NSMutableArray new];
+	NSMutableOrderedSet* foundServices = [NSMutableOrderedSet new];
 
 	//loop through every IOService:
 	io_iterator_t services;
@@ -47,19 +47,7 @@ int main(int argc, char** argv, char** envp)
 			IORegistryEntryGetName(child, child_name);
 			if (strcmp(child_name, client_name) == 0)
 			{
-				//check we haven't already added this service:
-				boolean_t found = false;
-				for (NSString* s in foundServices)
-				{
-					if (strcmp([s UTF8String], service_name) == 0)
-					{
-						found = true;
-						break;
-					}
-				}
-
-				if (!found)
-					[foundServices addObject:[NSString stringWithUTF8String:service_name]];
+				[foundServices addObject:[NSString stringWithUTF8String:service_name]];
 			
 				//we found the service, no need to look through more children
 				break;
