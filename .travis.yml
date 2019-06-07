@@ -11,8 +11,11 @@ before_deploy:
 - git tag $TRAVIS_TAG
 deploy:
   provider: releases
+  skip_cleanup: true
   api_key:
     secure: nt5FlXFFUaeVE/ami6w6uC1IWMWqnAHaPzQyrWyOZob8q5EjTKEaYr+kb357n4tqTO+BWdG/NQi6I7D3sNutVoZ/6XF6WP3/gXmIHEciCeDxLQzb1F2LLcMtafLETl+VlpBajhdQ6IY6hJCRwWK6UbRkPqNlrntmqpDFRbzR6cRakJgefBfjXsrpaPehxziBBuUC+BXteCg3CNjpmHqE+PeXe0Gx5lzOBWSohBvY0JSLaFSa/xIX/RjJWlN54K2/Oc19IF13w7HczXBiUKXIsDWP7Ev6HcHFjO3WQhDbylFYpQtYl18BzBAZpdEJ3LDZ00llzivx4M/2b0ZYRjpCSMjP325FZpEggNwdOikT7Su0zfsFaYplZ0FHhlL/rdXTeOFUV0G4+Hs0mZFprFYFz6K8lywA6NOC9n10g9Ft8iUVpwJQHXkLhKSEfZGSCBOkYUjZS/qN8qBEdyqoSH0xamu85vW7mDOBjSvCPAbWEmm5MDp8MzL3bH3PkJxD/s63E4N4/1CqLbadEuAgNwV8Sgqvf7iAniCZiVMCfweMx4AGKIJNjode3TPXA8e/ygge+O7dLsPpVFaQwqtsSFiAoaovlqq5fsfsuibgUGCPxs3LGkpSH8PIXri7rZj4Mj0nWDDmECOPj5tTImeJ8IGO5ILg2E71O3nn6AOJaYhNulU=
-  file: "./ioclient"
+  file_glob: true
+  file: "ioclient"
   on:
     repo: Muirey03/ioclient
+    branch: master
