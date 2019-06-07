@@ -6,6 +6,7 @@
 
 int main(int argc, char** argv, char** envp)
 {
+	printf("running...\n");
 	if (argc < 2)
 	{
 		printf("Incorrect Usage\nUsage: ioclient [client name]\n");
