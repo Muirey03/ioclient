@@ -5,10 +5,10 @@
 #include <IOKit/IOKitLib.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
+#include "TargetConditionals.h"
 
 int main(int argc, char** argv, char** envp)
 {
-	printf("running...\n");
 	if (argc < 2)
 	{
 		printf("Incorrect Usage\nUsage: ioclient [client name]\n");
@@ -27,14 +27,21 @@ int main(int argc, char** argv, char** envp)
 	{
 		//get the service's name:
 		io_name_t service_name;
-		IORegistryEntryGetName(service, service_name);
+		kr = IORegistryEntryGetName(service, service_name);
+		if (kr != KERN_SUCCESS)
+			continue;
 
 		//open first 10 clients:
 		io_connect_t conns[10];
 		for (int i = 0; i < 10; i++)
 		{
 			conns[i] = IO_OBJECT_NULL;
-			kr = IOServiceOpen(service, mach_task_self(), i, &(conns[i]));
+			//this doesn't work on macOS
+			#if TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
+				kr = IOServiceOpen(service, mach_task_self(), i, &(conns[i]));
+				if (kr != KERN_SUCCESS)
+					conns[i] = IO_OBJECT_NULL;
+			#endif
 		}
 
 		//loop through registry entries:
@@ -47,8 +54,8 @@ int main(int argc, char** argv, char** envp)
 		while ((child = IOIteratorNext(children)))
 		{
 			io_name_t child_name;
-			IORegistryEntryGetName(child, child_name);
-			if (strcmp(child_name, client_name) == 0)
+			kr = IORegistryEntryGetName(child, child_name);
+			if (kr == KERN_SUCCESS && strcmp(child_name, client_name) == 0)
 			{
 				[foundServices addObject:[NSString stringWithUTF8String:service_name]];
 			
@@ -60,15 +67,17 @@ int main(int argc, char** argv, char** envp)
 		//close clients again:
 		for (int i = 0; i < 10; i++)
 		{
-			if (conns[i])
+			if (conns[i] != IO_OBJECT_NULL)
 				IOServiceClose(conns[i]);
 		}
 
 		//release our children iterator:
-		IOObjectRelease(children);
+		if (children != IO_OBJECT_NULL)
+			IOObjectRelease(children);
 	}
 	//release our children iterator:
-	IOObjectRelease(services);
+	if (services != IO_OBJECT_NULL)
+		IOObjectRelease(services);
 
 	//print all matching services:
 	if (foundServices.count == 0)
